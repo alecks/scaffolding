@@ -1,7 +1,9 @@
 use tonic::transport::Server;
 
+mod protos;
 mod rest;
-use rest::{Client as RestClient, Server as RestClientServer};
+use protos::rest_client::rest_client_server::RestClientServer;
+use rest::Client as RestClient;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
