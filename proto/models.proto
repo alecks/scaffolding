@@ -1,0 +1,16 @@
+syntax = "proto3";
+package models;
+
+// TODO: Public flags + premium type.
+message User {
+  string avatar = 1;
+  bool bot = 2;
+  string discriminator = 3;
+  string email = 4;
+  uint64 id = 5;
+  string locale = 6;
+  bool mfa_enabled = 7;
+  string name = 8;
+  bool system = 9;
+  bool verified = 10;
+}
