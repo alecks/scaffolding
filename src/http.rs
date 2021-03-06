@@ -2,12 +2,12 @@ use tokio::sync::Mutex;
 use tonic::{Request, Response, Status};
 use twilight_model::id::UserId;
 
+use crate::protos::http_client::http_client_server::HttpClient as HttpClientDefinition;
+use crate::protos::http_client::{BootstrapRequest, EntityRequest};
 use crate::protos::models::User;
-use crate::protos::rest_client::rest_client_server::RestClient as RestClientDefinition;
-use crate::protos::rest_client::{BootstrapRequest, EntityRequest};
 
 const NOT_BOOTSTRAPPED: &str =
-  "A RestClient has not yet been bootstrapped. Call the Bootstrap method.";
+  "A HttpClient has not yet been bootstrapped. Call the Bootstrap method.";
 
 #[derive(Default)]
 pub struct Client {
@@ -15,7 +15,7 @@ pub struct Client {
 }
 
 #[tonic::async_trait]
-impl RestClientDefinition for Client {
+impl HttpClientDefinition for Client {
   async fn bootstrap(&self, request: Request<BootstrapRequest>) -> Result<Response<User>, Status> {
     {
       let mut client = self.client.lock().await;

@@ -4,8 +4,8 @@ pub mod models {
   tonic::include_proto!("models");
 }
 
-pub mod rest_client {
-  tonic::include_proto!("rest_client");
+pub mod http_client {
+  tonic::include_proto!("http_client");
 }
 
 // TODO: Possibly implement a macro to make this cleaner.

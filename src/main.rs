@@ -1,9 +1,9 @@
 use tonic::transport::Server;
 
+mod http;
 mod protos;
-mod rest;
-use protos::rest_client::rest_client_server::RestClientServer;
-use rest::Client as RestClient;
+use http::Client as HttpClient;
+use protos::http_client::http_client_server::HttpClientServer;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -14,7 +14,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Server::builder()
         .trace_fn(|_| tracing::info_span!("scaffolding"))
-        .add_service(RestClientServer::new(RestClient::default()))
+        .add_service(HttpClientServer::new(HttpClient::default()))
         .serve(addr)
         .await?;
     Ok(())

@@ -1,9 +1,9 @@
 syntax = "proto3";
-package rest_client;
+package http_client;
 
 import "models.proto";
 
-service RestClient {
+service HttpClient {
   rpc Bootstrap (BootstrapRequest) returns (models.User);
   rpc GetUser (EntityRequest) returns (models.User);
 }
