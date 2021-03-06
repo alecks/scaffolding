@@ -1,10 +1,11 @@
 use tokio::sync::Mutex;
 use tonic::{Request, Response, Status};
-use twilight_model::id::UserId;
+use twilight_model::channel::{Channel, GuildChannel};
+use twilight_model::id::{ChannelId, UserId};
 
 use crate::protos::http_client::http_client_server::HttpClient as HttpClientDefinition;
 use crate::protos::http_client::{BootstrapRequest, EntityRequest};
-use crate::protos::models::User;
+use crate::protos::models::{TextChannel, User};
 
 const NOT_BOOTSTRAPPED: &str =
   "A HttpClient has not yet been bootstrapped. Call the Bootstrap method.";
@@ -50,6 +51,32 @@ impl HttpClientDefinition for Client {
       };
 
       return Ok(Response::new(user.into()));
+    }
+
+    Err(Status::failed_precondition(NOT_BOOTSTRAPPED))
+  }
+
+  async fn get_text_channel(
+    &self,
+    request: Request<EntityRequest>,
+  ) -> Result<Response<TextChannel>, Status> {
+    if let Some(client) = self.client.lock().await.as_ref() {
+      let channel = match client.channel(ChannelId(request.into_inner().id)).await {
+        Ok(c) => match c {
+          Some(c) => match c {
+            Channel::Guild(GuildChannel::Text(c)) => c,
+            _ => {
+              return Err(Status::not_found(
+                "A channel with the provided ID exists, but is not a TextChannel.",
+              ))
+            }
+          },
+          None => return Err(Status::not_found("Channel does not exist.")),
+        },
+        Err(e) => return Err(Status::unknown(e.to_string())),
+      };
+
+      return Ok(Response::new(channel.into()));
     }
 
     Err(Status::failed_precondition(NOT_BOOTSTRAPPED))
