@@ -75,8 +75,8 @@ impl From<permission_overwrite::PermissionOverwrite> for PermissionOverwrite {
     Self {
       allow: p.allow.bits(),
       deny: p.deny.bits(),
-      id: id,
-      kind: kind,
+      id,
+      kind,
     }
   }
 }
