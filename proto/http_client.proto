@@ -5,7 +5,9 @@ import "models.proto";
 
 service HttpClient {
   rpc Bootstrap (BootstrapRequest) returns (models.User);
+
   rpc GetUser (EntityRequest) returns (models.User);
+  rpc GetTextChannel (EntityRequest) returns (models.TextChannel);
 }
 
 message EntityRequest {
