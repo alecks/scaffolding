@@ -6,6 +6,9 @@ use crate::protos::models::User;
 use crate::protos::rest_client::rest_client_server::RestClient as RestClientDefinition;
 use crate::protos::rest_client::{BootstrapRequest, EntityRequest};
 
+const NOT_BOOTSTRAPPED: &str =
+  "A RestClient has not yet been bootstrapped. Call the Bootstrap method.";
+
 #[derive(Default)]
 pub struct Client {
   client: Mutex<Option<twilight_http::Client>>,
@@ -49,8 +52,6 @@ impl RestClientDefinition for Client {
       return Ok(Response::new(user.into()));
     }
 
-    Err(Status::failed_precondition(
-      "A RestClient has not yet been bootstrapped. Call the Bootstrap method.",
-    ))
+    Err(Status::failed_precondition(NOT_BOOTSTRAPPED))
   }
 }
