@@ -21,7 +21,7 @@ message TextChannel {
   uint64 last_message_id = 3;
   string last_pin_timestamp = 4;
   string name = 5;
-  string nsfw = 6;
+  bool nsfw = 6;
   repeated PermissionOverwrite permission_overwrites = 7;
   uint64 parent_id = 8;
   int64 position = 9;
