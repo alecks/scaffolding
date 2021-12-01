@@ -5,7 +5,7 @@ package models;
 message User {
   string avatar = 1;
   bool bot = 2;
-  string discriminator = 3;
+  uint32 discriminator = 3;
   string email = 4;
   uint64 id = 5;
   string locale = 6;
@@ -19,7 +19,7 @@ message TextChannel {
   uint64 guild_id = 1;
   uint64 id = 2;
   uint64 last_message_id = 3;
-  string last_pin_timestamp = 4;
+  uint64 last_pin_timestamp = 4;
   string name = 5;
   bool nsfw = 6;
   repeated PermissionOverwrite permission_overwrites = 7;
