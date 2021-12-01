@@ -1,3 +1,4 @@
+use std::num::NonZeroU64;
 use tokio::sync::Mutex;
 use tonic::{Request, Response, Status};
 use twilight_model::channel::{Channel, GuildChannel};
@@ -30,23 +31,25 @@ impl HttpClientDefinition for Client {
       .as_ref()
       .unwrap()
       .current_user()
+      .exec()
       .await
     {
-      Ok(u) => u,
+      Ok(u) => u.model().await.unwrap(),
       Err(e) => return Err(Status::unknown(e.to_string())),
     };
 
     tracing::info!(message = "A new client has been bootstrapped.", %me.id);
-    Ok(Response::new(me.into()))
+    Ok(Response::new(User::from(me)))
   }
 
   async fn get_user(&self, request: Request<EntityRequest>) -> Result<Response<User>, Status> {
     if let Some(client) = self.client.lock().await.as_ref() {
-      let user = match client.user(UserId(request.into_inner().id)).await {
-        Ok(u) => match u {
-          Some(u) => u,
-          None => return Err(Status::not_found("User does not exist.")),
-        },
+      let user = match client
+        .user(UserId(NonZeroU64::new(request.into_inner().id).unwrap()))
+        .exec()
+        .await
+      {
+        Ok(u) => u.model().await.unwrap(),
         Err(e) => return Err(Status::unknown(e.to_string())),
       };
 
@@ -61,17 +64,18 @@ impl HttpClientDefinition for Client {
     request: Request<EntityRequest>,
   ) -> Result<Response<TextChannel>, Status> {
     if let Some(client) = self.client.lock().await.as_ref() {
-      let channel = match client.channel(ChannelId(request.into_inner().id)).await {
-        Ok(c) => match c {
-          Some(c) => match c {
-            Channel::Guild(GuildChannel::Text(c)) => c,
-            _ => {
-              return Err(Status::not_found(
-                "A channel with the provided ID exists, but is not a TextChannel.",
-              ))
-            }
-          },
-          None => return Err(Status::not_found("Channel does not exist.")),
+      let channel = match client
+        .channel(ChannelId(NonZeroU64::new(request.into_inner().id).unwrap()))
+        .exec()
+        .await
+      {
+        Ok(c) => match c.model().await.unwrap() {
+          Channel::Guild(GuildChannel::Text(c)) => c,
+          _ => {
+            return Err(Status::not_found(
+              "A channel with the provided ID exists, but is not a TextChannel.",
+            ))
+          }
         },
         Err(e) => return Err(Status::unknown(e.to_string())),
       };
