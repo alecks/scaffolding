@@ -43,9 +43,12 @@ impl HttpClientDefinition for Client {
   }
 
   async fn get_user(&self, request: Request<EntityRequest>) -> Result<Response<User>, Status> {
+    let id = request.into_inner().id;
+    tracing::info!(message = "Performing a get_user operation", %id);
+
     if let Some(client) = self.client.lock().await.as_ref() {
       let user = match client
-        .user(UserId(NonZeroU64::new(request.into_inner().id).unwrap()))
+        .user(UserId(NonZeroU64::new(id).unwrap()))
         .exec()
         .await
       {
