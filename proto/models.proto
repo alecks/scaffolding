@@ -7,7 +7,7 @@ message User {
   bool bot = 2;
   uint32 discriminator = 3;
   string email = 4;
-  uint64 id = 5;
+  string id = 5;
   string locale = 6;
   bool mfa_enabled = 7;
   string name = 8;
@@ -16,14 +16,14 @@ message User {
 }
 
 message TextChannel {
-  uint64 guild_id = 1;
-  uint64 id = 2;
-  uint64 last_message_id = 3;
+  string guild_id = 1;
+  string id = 2;
+  string last_message_id = 3;
   uint64 last_pin_timestamp = 4;
   string name = 5;
   bool nsfw = 6;
   repeated PermissionOverwrite permission_overwrites = 7;
-  uint64 parent_id = 8;
+  string parent_id = 8;
   int64 position = 9;
   uint64 rate_limit_per_user = 10;
   string topic = 11;
@@ -33,7 +33,7 @@ message PermissionOverwrite {
   uint64 allow = 1;
   uint64 deny = 2;
 
-  uint64 id = 3;
+  string id = 3;
   enum PermissionOverwriteType {
     MEMBER = 0;
     ROLE = 1;
