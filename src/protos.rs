@@ -17,7 +17,7 @@ impl From<twilight_model::user::CurrentUser> for User {
       bot: u.bot,
       discriminator: u.discriminator as u32,
       email: u.email.unwrap_or_default(),
-      id: u.id.get(),
+      id: u.id.get().to_string(),
       locale: u.locale.unwrap_or_default(),
       mfa_enabled: u.mfa_enabled,
       name: u.name,
@@ -34,7 +34,7 @@ impl From<twilight_model::user::User> for User {
       bot: u.bot,
       discriminator: u.discriminator as u32,
       email: u.email.unwrap_or_default(),
-      id: u.id.get(),
+      id: u.id.get().to_string(),
       locale: u.locale.unwrap_or_default(),
       mfa_enabled: u.mfa_enabled.unwrap_or_default(),
       name: u.name,
@@ -47,13 +47,13 @@ impl From<twilight_model::user::User> for User {
 impl From<twilight_model::channel::TextChannel> for TextChannel {
   fn from(c: twilight_model::channel::TextChannel) -> Self {
     Self {
-      guild_id: c.guild_id.unwrap().get(),
-      id: c.id.get(),
-      last_message_id: c.last_message_id.unwrap().get(),
+      guild_id: c.guild_id.unwrap().get().to_string(),
+      id: c.id.get().to_string(),
+      last_message_id: c.last_message_id.unwrap().get().to_string(),
       last_pin_timestamp: c.last_pin_timestamp.unwrap().as_micros(),
       name: c.name,
       nsfw: c.nsfw,
-      parent_id: c.parent_id.unwrap().get(),
+      parent_id: c.parent_id.unwrap().get().to_string(),
       permission_overwrites: c
         .permission_overwrites
         .into_iter()
@@ -69,8 +69,8 @@ impl From<twilight_model::channel::TextChannel> for TextChannel {
 impl From<permission_overwrite::PermissionOverwrite> for PermissionOverwrite {
   fn from(p: permission_overwrite::PermissionOverwrite) -> Self {
     let (id, kind) = match p.kind {
-      permission_overwrite::PermissionOverwriteType::Member(id) => (id.get(), 0),
-      permission_overwrite::PermissionOverwriteType::Role(id) => (id.get(), 1),
+      permission_overwrite::PermissionOverwriteType::Member(id) => (id.get().to_string(), 0),
+      permission_overwrite::PermissionOverwriteType::Role(id) => (id.get().to_string(), 1),
     };
     Self {
       allow: p.allow.bits(),
